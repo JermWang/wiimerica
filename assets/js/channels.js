@@ -17,10 +17,9 @@ window.WIIMERICA = {
   /* Where "Start" sends people on the Buy channel.
      Leave a URL empty to hide that button.                            */
   links: {
-    buy:       "",                       // e.g. pump.fun / Raydium / Uniswap link
-    chart:     "",                       // e.g. DexScreener link
-    twitter:   "https://x.com/wiimerica_fun",
-    telegram:  ""                        // e.g. https://t.me/wiimerica
+    buy:     "",                         // e.g. pump.fun / Raydium / Uniswap link
+    chart:   "",                         // e.g. DexScreener link
+    twitter: "https://x.com/wiimerica_fun"
   },
 
   /* -------------------------------------------------------------------

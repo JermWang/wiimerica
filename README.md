@@ -51,10 +51,9 @@ Open [`assets/js/channels.js`](assets/js/channels.js) and fill in the top block:
 contractAddress: "YourContractAddressHere",
 
 links: {
-  buy:      "https://...",   // pump.fun / Raydium / Uniswap
-  chart:    "https://...",   // DexScreener
-  twitter:  "https://x.com/...",
-  telegram: "https://t.me/..."
+  buy:     "https://...",   // pump.fun / Raydium / Uniswap
+  chart:   "https://...",   // DexScreener
+  twitter: "https://x.com/wiimerica_fun"
 }
 ```
 

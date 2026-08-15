@@ -288,10 +288,9 @@
     links.className = "buy-links";
     var L = CFG.links || {};
     [
-      ["Buy",      L.buy],
-      ["Chart",    L.chart],
-      ["X",        L.twitter],
-      ["Telegram", L.telegram]
+      ["Buy",   L.buy],
+      ["Chart", L.chart],
+      ["X",     L.twitter]
     ].forEach(function (pair) {
       if (!pair[1]) return;
       var a = document.createElement("a");
@@ -433,7 +432,7 @@
   });
 
   var L = CFG.links || {};
-  [["Follow on X", L.twitter], ["Join Telegram", L.telegram], ["Chart", L.chart]]
+  [["Follow on X", L.twitter], ["Chart", L.chart]]
     .forEach(function (pair) {
       if (!pair[1]) return;
       var a = document.createElement("a");

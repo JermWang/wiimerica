@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "node tools/dev-server.js",
     "thumbs": "powershell -ExecutionPolicy Bypass -File tools/make-thumbs.ps1",
+    "share": "powershell -ExecutionPolicy Bypass -File tools/make-share.ps1",
     "fonts": "npm i --no-save subset-font && node tools/subset-fonts.mjs"
   }
 }
