@@ -1,10 +1,15 @@
-/* Minimal zero-dependency static server for local preview.
-   Usage: node server.js  →  http://localhost:5173            */
+/* Minimal zero-dependency static server for LOCAL PREVIEW ONLY.
+   Usage: npm run dev  →  http://localhost:5173
+
+   This lives in tools/ deliberately. When it sat at the repo root, Vercel
+   detected it as a Node entrypoint and deployed the whole site as a
+   serverless function instead of static files, which 404'd every asset. */
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
 
-const ROOT = __dirname;
+// serve the repo root, one level up from tools/
+const ROOT = path.dirname(__dirname);
 const PORT = process.env.PORT || 5173;
 
 const TYPES = {

@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "description": "Wiimerica — a Wii Menu recreation for the $WIIMERICA token.",
+  "//": "No `start` or `build` script on purpose. Vercel treats those as a signal to deploy the repo as a Node app rather than as static files, which is what broke the live site.",
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js",
+    "dev": "node tools/dev-server.js",
     "thumbs": "powershell -ExecutionPolicy Bypass -File tools/make-thumbs.ps1",
     "fonts": "npm i --no-save subset-font && node tools/subset-fonts.mjs"
   }

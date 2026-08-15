@@ -11,12 +11,28 @@ no third-party scripts, no analytics, no network calls of any kind.
 ## Run it
 
 ```bash
-node server.js
+npm run dev
 ```
 
-Then open <http://localhost:5173>. (`npm run dev` does the same thing.)
+Then open <http://localhost:5173>.
 
 Any static host works — it is just files. There is nothing to compile.
+
+### Deploying (read this before changing the layout)
+
+`vercel.json` pins the output directory to the repo root, and the local dev
+server lives in `tools/`, not at the root. Both are deliberate:
+
+- Vercel treats a root-level Node entrypoint plus a `start` script as "this is
+  a Node app" and deploys the site as a serverless function. Every static asset
+  then 404s, because those files are not bundled into the function.
+- Vercel also treats a root folder named `public/` as the output directory and
+  publishes its *contents* at the site root, so `public/thumbs/x.jpg` would be
+  served as `/thumbs/x.jpg` while `assets/` never deploys at all.
+
+The site rendered as unstyled HTML on the live domain for both reasons. Do not
+add a `start` or `build` script to `package.json`, and do not move the dev
+server back to the root.
 
 ---
 

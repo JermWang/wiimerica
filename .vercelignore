@@ -1,7 +1,10 @@
 # Dev-only files — keep them out of the deployed tree.
 # Everything not listed here ships, including assets/ and public/.
+#
+# tools/ matters most: it holds the local dev server. A Node entrypoint at
+# the repo root made Vercel deploy this as a serverless function instead of
+# static files, and every asset 404'd from inside the lambda.
 tools/
-server.js
 README.md
 .claude/
 node_modules/
