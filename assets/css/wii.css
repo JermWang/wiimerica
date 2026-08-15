@@ -447,13 +447,16 @@ body.state-channel .menu {
   border-radius: 50%;
   border: 4px solid #fff;
   background: #e7e9ec;
-  overflow: hidden;
   padding: 0;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22), inset 0 0 0 2px rgba(0, 0, 0, 0.06);
   transition: transform 200ms ease, box-shadow 200ms ease;
   display: grid;
   place-items: center;
 }
+
+/* only the disc slot clips — it has to crop the avatar into the circle.
+   The mail slot must NOT, or its badge gets sliced by the round edge. */
+.disc-slot { overflow: hidden; }
 
 .disc-slot { left: clamp(20px, 3.5vw, 74px); }
 .mail-slot { right: clamp(20px, 3.5vw, 74px); }
@@ -494,10 +497,13 @@ body.state-channel .menu {
   border-right: 3px solid #6f7681;
 }
 
+/* sits on the top-right rim of the circle rather than inside it, so it
+   neither gets clipped nor crowds the envelope glyph */
 .mail-badge {
   position: absolute;
-  top: 4%;
-  right: 4%;
+  top: -6px;
+  right: -6px;
+  z-index: 2;
   min-width: 22px;
   height: 22px;
   padding: 0 5px;
@@ -507,7 +513,8 @@ body.state-channel .menu {
   font-size: 12px;
   line-height: 22px;
   text-align: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  /* white ring separates it from both the button and the bar behind it */
+  box-shadow: 0 0 0 2px #fff, 0 2px 5px rgba(0, 0, 0, 0.35);
 }
 
 .mail-badge[hidden] { display: none; }
