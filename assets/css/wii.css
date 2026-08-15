@@ -43,8 +43,12 @@ html, body {
   -webkit-user-select: none;
 }
 
-body { cursor: url("../img/cursor.png") 8 4, auto; }
-button, a, .channel { cursor: url("../img/cursor.png") 8 4, pointer; }
+/* CSS cannot scale a cursor image — it renders at its natural size — so the
+   file itself is 47x60 (down from 101x128, which is the browser's max).
+   Full-size original kept at tools/cursor-src.png.
+   The 16 0 hotspot is the fingertip; regenerate it if the size changes. */
+body { cursor: url("../img/cursor.png") 16 0, auto; }
+button, a, .channel { cursor: url("../img/cursor.png") 16 0, pointer; }
 
 /* =====================================================================
    BOOT / HEALTH & SAFETY
