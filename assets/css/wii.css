@@ -30,6 +30,11 @@
 
 * { box-sizing: border-box; }
 
+/* The `hidden` attribute is only a UA-level `display: none`, so any author
+   rule setting display (e.g. .wii-btn) silently beats it and the element
+   stays on screen. Make the attribute authoritative. */
+[hidden] { display: none !important; }
+
 html, body {
   margin: 0;
   padding: 0;
@@ -672,14 +677,16 @@ body.state-channel .channel-view {
   background: rgba(255, 255, 255, 0.06);
 }
 
+/* The channel page is where people actually read the address, so let it wrap
+   onto a second line on narrow screens rather than truncating it. */
 .buy-ca code {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
   font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
   font-size: clamp(11px, 1.2vw, 16px);
+  line-height: 1.45;
   color: #fff;
 }
 

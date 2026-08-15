@@ -12,7 +12,7 @@ window.WIIMERICA = {
      Paste the contract address between the quotes when you have it.
      While it is empty the site shows "COMING SOON" instead.
   ------------------------------------------------------------------- */
-  contractAddress: "",
+  contractAddress: "HC3XgUMQ2oeiQUz1af4WpjVKRz9aEJXwSHG8XsEJpump",
 
   /* Where "Start" sends people on the Buy channel.
      Leave a URL empty to hide that button.                            */

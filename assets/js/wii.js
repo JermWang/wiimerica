@@ -508,9 +508,24 @@
     document.body.removeChild(ta);
   }
 
+  /* A 44-character address does not fit the top bar on a phone. A plain CSS
+     ellipsis would clip the tail, which is the half people check, so shorten
+     from the middle instead and keep both ends visible. Copy always uses the
+     full address regardless of what is displayed. */
+  function renderCA() {
+    var full = ca();
+    var el = $("caValue");
+    el.title = full;
+    var narrow = window.matchMedia("(max-width: 820px)").matches;
+    el.textContent = (narrow && full.length > 20)
+      ? full.slice(0, 6) + "…" + full.slice(-6)
+      : full;
+  }
+
   if (ca()) {
     $("caBar").hidden = false;
-    $("caValue").textContent = ca();
+    renderCA();
+    window.addEventListener("resize", renderCA);
     $("caCopy").addEventListener("click", function () { copyCA($("caCopy")); });
     /* the bar is fixed to the top of the screen, so the menu and the channel
        stage both need to be pushed down clear of it */
