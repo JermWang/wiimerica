@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wiimerica</title>
+
+<meta name="description" content="Wiimerica — the channel for the greatest country on earth.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wiimerica">
+<meta property="og:description" content="Wiimerica — the channel for the greatest country on earth.">
+<meta property="og:image" content="public/thumbs/wiimerica%20logo.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Wiimerica">
+<meta name="twitter:description" content="Wiimerica — the channel for the greatest country on earth.">
+<meta name="twitter:image" content="public/thumbs/wiimerica%20logo.jpg">
+<meta name="theme-color" content="#b8c0cc">
+
+<link rel="icon" href="public/thumbs/PFP.jpg">
+<link rel="apple-touch-icon" href="public/thumbs/PFP.jpg">
+<link rel="stylesheet" href="assets/css/wii.css">
+</head>
+
+<body class="state-boot">
+
+<!-- ============ BOOT / HEALTH & SAFETY SCREEN ============ -->
+<div class="boot" id="boot">
+  <div class="boot-flash" id="bootFlash"></div>
+
+  <div class="boot-inner">
+    <!-- the .png copy keeps its transparency, so it sits on the black boot
+         screen cleanly; tiles use the white-flattened .jpg instead -->
+    <img class="boot-logo" src="public/thumbs/wiimerica logo.png" alt="Wiimerica" fetchpriority="high">
+
+    <div class="boot-warning">
+      <h1>WARNING &mdash; HEALTH AND SAFETY</h1>
+      <p>
+        BEFORE PLAYING, READ THE OPERATIONS MANUAL FOR IMPORTANT
+        INFORMATION ABOUT YOUR HEALTH AND SAFETY.
+      </p>
+      <p class="boot-warning-sub">
+        Wiimerica is a memecoin and a joke. It is not an investment,
+        it is not financial advice, and it has no intrinsic value.
+        Wrist strap not included.
+      </p>
+    </div>
+
+    <button class="boot-press" id="bootPress" type="button">
+      <span class="boot-a">A</span>
+      <span>Press&nbsp;&nbsp;to continue</span>
+    </button>
+  </div>
+</div>
+
+<!-- ============ MAIN MENU ============ -->
+<main class="menu" id="menu" aria-hidden="true">
+
+  <div class="menu-top">
+    <button class="page-arrow page-arrow-left" id="pagePrev" type="button" aria-label="Previous page"></button>
+
+    <div class="channels-viewport">
+      <div class="channels" id="channels"><!-- built by wii.js --></div>
+    </div>
+
+    <button class="page-arrow page-arrow-right" id="pageNext" type="button" aria-label="Next page"></button>
+  </div>
+
+  <div class="menu-bottom">
+    <button class="disc-slot" id="discBtn" type="button" aria-label="Wiimerica">
+      <img src="public/thumbs/PFP.jpg" alt="">
+    </button>
+
+    <div class="clock-wrap">
+      <div class="clock" id="clock">--:--</div>
+      <div class="date" id="date">&nbsp;</div>
+    </div>
+
+    <button class="mail-slot" id="mailBtn" type="button" aria-label="Wii Mail">
+      <span class="mail-icon"></span>
+      <span class="mail-badge" id="mailBadge">1</span>
+    </button>
+
+    <div class="page-dots" id="pageDots"></div>
+  </div>
+</main>
+
+<!-- ============ CHANNEL SPLASH / DETAIL ============ -->
+<section class="channel-view" id="channelView" aria-hidden="true">
+  <div class="channel-stage" id="channelStage"></div>
+
+  <div class="channel-bar">
+    <button class="wii-btn" id="btnBackToMenu" type="button">Wii&nbsp;Menu</button>
+    <div class="channel-title" id="channelTitle"></div>
+    <button class="wii-btn wii-btn-primary" id="btnStart" type="button">Start</button>
+  </div>
+</section>
+
+<!-- ============ WII MAIL / SOCIALS ============ -->
+<section class="mail-view" id="mailView" aria-hidden="true">
+  <div class="mail-panel">
+    <h2>Wii Mail</h2>
+    <div class="mail-list" id="mailList"></div>
+    <button class="wii-btn" id="btnMailClose" type="button">Wii&nbsp;Menu</button>
+  </div>
+</section>
+
+<!-- ============ CONTRACT ADDRESS BAR ============ -->
+<div class="ca-bar" id="caBar" hidden>
+  <span class="ca-label">CA</span>
+  <code class="ca-value" id="caValue"></code>
+  <button class="ca-copy" id="caCopy" type="button">Copy</button>
+</div>
+
+<!-- ============ AUDIO ============ -->
+<audio id="sfxStartup"  src="assets/audio/startup.wav"      preload="auto"></audio>
+<audio id="sfxHover"    src="assets/audio/hover.wav"        preload="auto"></audio>
+<audio id="sfxChannel"  src="assets/audio/hoverchannel.wav" preload="auto"></audio>
+<audio id="sfxScroll"   src="assets/audio/scroll.wav"       preload="auto"></audio>
+<!-- preload="none": the 2MB track is fetched when the boot button is hovered,
+     not on first paint. See startMusic()/primeMusic() in wii.js. -->
+<audio id="bgm" src="public/wiimerica/Wii Music - Gaming Background Music (HD).mp3" loop preload="none"></audio>
+
+<button class="mute-btn" id="muteBtn" type="button" aria-label="Toggle sound">
+  <span id="muteIcon">&#128266;</span>
+</button>
+
+<script src="assets/js/channels.js"></script>
+<script src="assets/js/wii.js"></script>
+</body>
+</html>

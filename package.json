@@ -1,0 +1,12 @@
+{
+  "name": "wiimerica",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Wiimerica — a Wii Menu recreation for the $WIIMERICA token.",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js",
+    "thumbs": "powershell -ExecutionPolicy Bypass -File tools/make-thumbs.ps1",
+    "fonts": "npm i --no-save subset-font && node tools/subset-fonts.mjs"
+  }
+}

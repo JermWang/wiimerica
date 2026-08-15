@@ -1,0 +1,994 @@
+/* =====================================================================
+   WIIMERICA — Wii Menu recreation
+   Wii chrome assets (fonts / sounds / textures) from danintosh/Wii-Menu-HTML (MIT).
+   All layout + behaviour written for this project.
+   ===================================================================== */
+
+/* Latin subsets of the Wii system fonts — 7.7KB instead of 2.4MB.
+   Sources live in tools/font-src/; rebuild with `npm run fonts`. */
+@font-face {
+  font-family: "WiiUI";
+  src: url("../fonts/main.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "WiiClock";
+  src: url("../fonts/clock.woff2") format("woff2");
+  font-display: swap;
+}
+
+:root {
+  --wii-grey:        #b8b7bc;
+  --wii-blue:        #7dcde8;
+  --wii-blue-deep:   #2ba3d4;
+  --wii-bar-text:    #7b7b7d;
+  --wii-clock-text:  #9c9c9c;
+  --us-red:          #c8102e;
+  --us-blue:         #1b3d8f;
+  --bar-h:           190px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: "WiiUI", "Trebuchet MS", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body { cursor: url("../img/cursor.png") 8 4, auto; }
+button, a, .channel { cursor: url("../img/cursor.png") 8 4, pointer; }
+
+/* =====================================================================
+   BOOT / HEALTH & SAFETY
+   ===================================================================== */
+
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  transition: opacity 600ms ease;
+}
+
+body:not(.state-boot) .boot {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.boot-inner {
+  width: min(880px, 88vw);
+  text-align: center;
+  animation: bootFadeIn 1200ms ease backwards;
+}
+
+@keyframes bootFadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.boot-logo {
+  width: min(620px, 76vw);
+  height: auto;
+  display: block;
+  margin: 0 auto 28px;
+  filter: drop-shadow(0 6px 26px rgba(255, 255, 255, 0.22));
+}
+
+.boot-warning {
+  border: 3px solid #fff;
+  border-radius: 14px;
+  padding: 26px 30px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+.boot-warning h1 {
+  margin: 0 0 16px;
+  font-size: clamp(15px, 2.1vw, 26px);
+  letter-spacing: 0.09em;
+  color: #fff;
+}
+
+.boot-warning p {
+  margin: 0;
+  font-size: clamp(11px, 1.25vw, 15px);
+  line-height: 1.65;
+  letter-spacing: 0.03em;
+  color: #dfe3e8;
+}
+
+.boot-warning-sub {
+  margin-top: 14px !important;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  color: #9fa6ae !important;
+}
+
+.boot-press {
+  margin-top: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 34px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: clamp(13px, 1.5vw, 18px);
+  letter-spacing: 0.06em;
+  animation: bootPulse 1.6s ease-in-out infinite;
+  transition: background 200ms ease, transform 200ms ease;
+}
+
+.boot-press:hover {
+  background: rgba(255, 255, 255, 0.14);
+  transform: scale(1.04);
+}
+
+.boot-a {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  color: #111;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+@keyframes bootPulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.45; }
+}
+
+/* white flash when the menu boots */
+.boot-flash {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.boot-flash.fire { animation: flash 700ms ease-out; }
+
+@keyframes flash {
+  0%   { opacity: 0; }
+  12%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* =====================================================================
+   MAIN MENU
+   ===================================================================== */
+
+.menu {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #d7dade;
+  background-image: url("../img/bg.png");
+  background-repeat: repeat;
+  opacity: 0;
+  transition: opacity 500ms ease, transform 650ms cubic-bezier(.2, .7, .3, 1);
+  transform: scale(1);
+}
+
+body.state-menu .menu,
+body.state-channel .menu,
+body.state-mail .menu {
+  opacity: 1;
+}
+
+/* the menu zooms toward the channel you picked */
+body.state-channel .menu {
+  transform: scale(3.2);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.menu-top {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 2.2vh 0 0;
+}
+
+.channels-viewport {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.channels {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: clamp(10px, 1.5vh, 22px) clamp(10px, 1.1vw, 24px);
+  width: min(1560px, 92%);
+  /* 4x3 of ~16:9 tiles plus gaps. Keeping the ratio on the container is what
+     stops the tiles going square on tall windows; max-height yields on short
+     ones, which only makes the tiles a little wider than a real Wii. */
+  aspect-ratio: 40 / 17;
+  max-height: 100%;
+  transition: transform 320ms cubic-bezier(.3, .7, .3, 1), opacity 220ms ease;
+}
+
+.channels.turning { opacity: 0; }
+
+/* ---------- channel tile ---------- */
+
+.channel {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 6px solid var(--wii-grey);
+  border-radius: 22px;
+  background: #fff;
+  overflow: hidden;
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+  /* staggered pop-in on boot.
+     fill is `backwards`, not `both`, so that once the animation ends the
+     tile returns to its own styles — otherwise the finished animation's
+     scale(1) would outrank the :hover scale below. */
+  animation: channelIn 420ms cubic-bezier(.2, 1.3, .4, 1) backwards;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes channelIn {
+  from { opacity: 0; transform: scale(0.55); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.channel:hover,
+.channel:focus-visible {
+  border-color: var(--wii-blue);
+  box-shadow: 0 0 0 3px rgba(125, 205, 232, 0.45), 0 8px 22px rgba(0, 0, 0, 0.18);
+  transform: scale(1.035);
+  outline: none;
+  z-index: 5;
+}
+
+.channel-media {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.channel-media.vid { opacity: 0; transition: opacity 260ms ease; }
+.channel:hover .channel-media.vid { opacity: 1; }
+.channel.no-poster .channel-media.vid { opacity: 1; }
+
+/* label plate that slides up on hover, like the real menu */
+.channel-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 7px 10px;
+  background: rgba(255, 255, 255, 0.94);
+  border-top: 2px solid var(--wii-grey);
+  color: #4c4c4f;
+  font-size: clamp(10px, 0.85vw, 15px);
+  letter-spacing: 0.02em;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transform: translateY(105%);
+  transition: transform 200ms ease;
+}
+
+.channel:hover .channel-label,
+.channel:focus-visible .channel-label { transform: translateY(0); }
+
+/* the "Buy" channel gets the americana treatment */
+.channel.is-buy {
+  border-color: var(--us-red);
+  background: linear-gradient(160deg, var(--us-blue) 0%, #14295c 55%, var(--us-red) 100%);
+}
+
+.channel.is-buy:hover {
+  border-color: #ff3b52;
+  box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.45), 0 8px 22px rgba(0, 0, 0, 0.25);
+}
+
+.channel.is-buy .channel-media {
+  object-fit: contain;
+  padding: 12%;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+}
+
+.channel.is-buy .buy-flash {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: end center;
+  padding-bottom: 8%;
+  color: #fff;
+  font-size: clamp(11px, 1vw, 18px);
+  letter-spacing: 0.12em;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  animation: buyBlink 1.8s ease-in-out infinite;
+}
+
+@keyframes buyBlink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.35; }
+}
+
+/* empty slot — animated shimmer, like an unused Wii channel */
+.channel.is-blank {
+  background: repeating-linear-gradient(
+    115deg,
+    #e9eaec 0px, #e9eaec 14px,
+    #f4f5f6 14px, #f4f5f6 28px
+  );
+  animation: channelIn 420ms cubic-bezier(.2, 1.3, .4, 1) backwards,
+             blankPan 1.1s linear infinite;
+  animation-delay: var(--d, 0ms), 0ms;
+}
+
+@keyframes blankPan {
+  from { background-position: 0 0; }
+  to   { background-position: 56px 0; }
+}
+
+.channel.is-blank:hover {
+  border-color: var(--wii-grey);
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---------- page arrows ---------- */
+
+.page-arrow {
+  flex: 0 0 auto;
+  width: clamp(52px, 5vw, 92px);
+  height: clamp(52px, 5vw, 92px);
+  border: 0;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  transition: transform 160ms ease, opacity 160ms ease;
+}
+
+.page-arrow-left  { background-image: url("../img/back.png"); }
+.page-arrow-right { background-image: url("../img/forward.png"); }
+.page-arrow-left:hover  { background-image: url("../img/backhover.png"); }
+.page-arrow-right:hover { background-image: url("../img/forwardhover.png"); }
+.page-arrow:hover { transform: scale(1.08); }
+
+.page-arrow[disabled] {
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+/* =====================================================================
+   BOTTOM BAR
+   ===================================================================== */
+
+.menu-bottom {
+  position: relative;
+  flex: 0 0 var(--bar-h);
+  height: var(--bar-h);
+  background-image: url("../img/bottom.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: top center;
+  /* clock, date and page dots share one centred column so they can never
+     collide, however short the bar gets */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(4px, 0.9vh, 12px);
+  /* nudge down past the dip in the bar graphic. vh, not %, because
+     percentage padding resolves against the container's *width*. */
+  padding-top: clamp(6px, 1.6vh, 18px);
+  padding-bottom: clamp(4px, 1vh, 12px);
+}
+
+.clock-wrap {
+  text-align: center;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.clock {
+  font-family: "WiiClock", "WiiUI", sans-serif;
+  font-size: clamp(30px, 4.2vw, 74px);
+  color: var(--wii-clock-text);
+  letter-spacing: 0.01em;
+}
+
+.date {
+  margin-top: 4px;
+  font-size: clamp(13px, 1.6vw, 28px);
+  color: var(--wii-bar-text);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+/* the disc slot (left) and mail (right) */
+.disc-slot,
+.mail-slot {
+  position: absolute;
+  bottom: 18%;
+  width: clamp(64px, 6.6vw, 116px);
+  height: clamp(64px, 6.6vw, 116px);
+  border-radius: 50%;
+  border: 4px solid #fff;
+  background: #e7e9ec;
+  overflow: hidden;
+  padding: 0;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22), inset 0 0 0 2px rgba(0, 0, 0, 0.06);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+  display: grid;
+  place-items: center;
+}
+
+.disc-slot { left: clamp(20px, 3.5vw, 74px); }
+.mail-slot { right: clamp(20px, 3.5vw, 74px); }
+
+.disc-slot:hover,
+.mail-slot:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 4px rgba(125, 205, 232, 0.6), 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.disc-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mail-icon {
+  width: 52%;
+  height: 38%;
+  border: 3px solid #6f7681;
+  border-radius: 3px;
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.mail-icon::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 118%;
+  height: 118%;
+  border-bottom: 3px solid #6f7681;
+  transform: translateX(-50%) rotate(0deg);
+  clip-path: polygon(0 0, 50% 62%, 100% 0);
+  border-left: 3px solid #6f7681;
+  border-right: 3px solid #6f7681;
+}
+
+.mail-badge {
+  position: absolute;
+  top: 4%;
+  right: 4%;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--us-red);
+  color: #fff;
+  font-size: 12px;
+  line-height: 22px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.mail-badge[hidden] { display: none; }
+
+/* page dots */
+.page-dots {
+  display: flex;
+  gap: 9px;
+}
+
+.page-dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #8d9299;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.25);
+  transition: background 200ms ease, transform 200ms ease;
+}
+
+.page-dots span.on {
+  background: var(--us-red);
+  transform: scale(1.25);
+}
+
+/* =====================================================================
+   CHANNEL VIEW
+   ===================================================================== */
+
+.channel-view {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms ease;
+}
+
+body.state-channel .channel-view {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.channel-stage {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  /* flex, not grid: a percentage max-height only resolves against a parent
+     with a definite height, and an auto-sized grid row grows to fit its item
+     instead — which let tall videos overflow and get clipped */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden auto;
+  background: #000;
+}
+
+.channel-stage > video,
+.channel-stage > img {
+  max-width: 100%;
+  max-height: 100%;
+  min-height: 0;
+  flex: 0 1 auto;
+  object-fit: contain;
+  display: block;
+  animation: stageIn 500ms cubic-bezier(.2, .8, .3, 1) backwards;
+}
+
+@keyframes stageIn {
+  from { opacity: 0; transform: scale(0.82); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* soundtrack player laid over the stage */
+.stage-audio {
+  position: absolute;
+  left: 50%;
+  bottom: 74px;
+  transform: translateX(-50%);
+  width: min(460px, 82%);
+  z-index: 3;
+  filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.6));
+}
+
+.stage-audio.raised { bottom: 92px; }
+
+.stage-note {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 16px 24px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+  color: #e7eaee;
+  font-size: clamp(12px, 1.3vw, 18px);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+/* --- buy panel --- */
+.buy-panel {
+  width: min(760px, 90vw);
+  /* auto margins rather than align-items, so nothing is cut off at the top
+     if the panel ever has to scroll */
+  margin: auto;
+  flex: 0 0 auto;
+  padding: 20px 24px;
+  text-align: center;
+  color: #fff;
+  animation: stageIn 500ms cubic-bezier(.2, .8, .3, 1) backwards;
+}
+
+/* sized against viewport height as well as width, so the Buy/Chart buttons
+   stay above the fold on short laptop screens */
+.buy-panel img {
+  width: min(260px, 42vw, 26vh);
+  border-radius: 20px;
+  border: 5px solid #fff;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.55);
+}
+
+.buy-panel h2 {
+  margin: 0 0 6px;
+  font-size: clamp(20px, 2.6vw, 36px);
+  letter-spacing: 0.04em;
+}
+
+.buy-panel .buy-sub {
+  margin: 0 0 16px;
+  color: #aab2bd;
+  font-size: clamp(12px, 1.3vw, 17px);
+}
+
+.buy-ca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  margin: 0 auto 16px;
+  padding: 10px 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.buy-ca code {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: clamp(11px, 1.2vw, 16px);
+  color: #fff;
+}
+
+.buy-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+/* =====================================================================
+   WII MAIL
+   ===================================================================== */
+
+.mail-view {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  background: rgba(10, 14, 20, 0.72);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+
+body.state-mail .mail-view {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.mail-panel {
+  width: min(620px, 90vw);
+  max-height: 80vh;
+  overflow: auto;
+  padding: 28px;
+  border: 6px solid var(--wii-grey);
+  border-radius: 26px;
+  background: #fff;
+  text-align: center;
+  transform: translateY(14px);
+  transition: transform 300ms cubic-bezier(.2, .9, .3, 1);
+}
+
+body.state-mail .mail-panel { transform: translateY(0); }
+
+.mail-panel h2 {
+  margin: 0 0 20px;
+  color: #4c4c4f;
+  font-size: clamp(20px, 2.4vw, 30px);
+  letter-spacing: 0.05em;
+}
+
+.mail-item {
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  border: 3px solid #dcdee1;
+  border-radius: 14px;
+  background: #f7f8f9;
+  text-align: left;
+}
+
+.mail-item .m-from {
+  font-size: 12px;
+  color: #8d9298;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mail-item .m-subject {
+  margin: 3px 0 6px;
+  font-size: clamp(14px, 1.5vw, 19px);
+  color: #33363a;
+}
+
+.mail-item .m-body {
+  font-size: clamp(12px, 1.25vw, 15px);
+  color: #5d626a;
+  line-height: 1.6;
+}
+
+.mail-link {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--wii-blue-deep);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.mail-link:hover { text-decoration: underline; }
+
+/* =====================================================================
+   BUTTONS
+   ===================================================================== */
+
+.channel-bar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px clamp(16px, 4vw, 60px);
+  background: linear-gradient(#e8eaed, #c9ced4);
+  border-top: 3px solid #9aa1a9;
+}
+
+.channel-title {
+  flex: 1;
+  text-align: center;
+  color: #4a4d52;
+  font-size: clamp(14px, 1.8vw, 26px);
+  letter-spacing: 0.04em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wii-btn {
+  flex: 0 0 auto;
+  padding: 12px clamp(18px, 2.6vw, 40px);
+  border: 3px solid #a9aeb5;
+  border-radius: 999px;
+  background: linear-gradient(#ffffff, #dfe3e7);
+  color: #4a4d52;
+  font-family: inherit;
+  font-size: clamp(13px, 1.4vw, 20px);
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  display: inline-block;
+  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.wii-btn:hover {
+  transform: scale(1.06);
+  border-color: var(--wii-blue);
+  box-shadow: 0 0 0 3px rgba(125, 205, 232, 0.4);
+}
+
+.wii-btn-primary {
+  background: linear-gradient(#e2536a, var(--us-red));
+  border-color: #8f0b20;
+  color: #fff;
+}
+
+.wii-btn-primary:hover {
+  border-color: #ff8195;
+  box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.4);
+}
+
+/* =====================================================================
+   CONTRACT ADDRESS BAR
+   ===================================================================== */
+
+.ca-bar {
+  position: fixed;
+  z-index: 400;
+  left: 50%;
+  top: 14px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(680px, 92vw);
+  padding: 8px 8px 8px 14px;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--us-blue), #2b2f7a 55%, var(--us-red));
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.ca-bar[hidden] { display: none; }
+
+/* The bar is position:fixed, so anything that starts at the top of the
+   screen has to be pushed clear of it. Set by wii.js only when an address
+   is actually configured. */
+.has-ca .menu-top      { padding-top: 78px; }
+.has-ca .channel-stage { padding-top: 72px; }
+
+.ca-label {
+  flex: 0 0 auto;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.ca-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: clamp(11px, 1.15vw, 14px);
+  color: #fff;
+}
+
+.ca-copy {
+  flex: 0 0 auto;
+  padding: 6px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--us-blue);
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  transition: transform 150ms ease;
+}
+
+.ca-copy:hover { transform: scale(1.07); }
+.ca-copy.done  { background: #21c07a; color: #fff; }
+
+/* =====================================================================
+   MUTE
+   ===================================================================== */
+
+.mute-btn {
+  position: fixed;
+  z-index: 400;
+  right: 14px;
+  top: 14px;
+  width: 42px;
+  height: 42px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 17px;
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease, transform 150ms ease;
+}
+
+body:not(.state-boot) .mute-btn {
+  opacity: 0.75;
+  pointer-events: auto;
+}
+
+.mute-btn:hover { opacity: 1; transform: scale(1.08); }
+
+/* =====================================================================
+   RESPONSIVE
+   ===================================================================== */
+
+@media (max-width: 1100px) {
+  :root { --bar-h: 150px; }
+  .channels { width: 94%; }
+}
+
+/* Short windows: give the channel grid its height back by shrinking the
+   bottom bar, otherwise the tiles flatten well past the console's 16:9. */
+@media (min-width: 821px) and (max-height: 780px) {
+  :root { --bar-h: 150px; }
+  .has-ca .menu-top { padding-top: 70px; }
+}
+
+@media (min-width: 821px) and (max-height: 640px) {
+  :root { --bar-h: 118px; }
+  .has-ca .menu-top { padding-top: 66px; }
+}
+
+@media (max-width: 820px) {
+  :root { --bar-h: 108px; }
+
+  /* Two columns of six, arrows in a row underneath. Everything still fits
+     one screen — the real console never scrolls, and neither should this. */
+  .menu-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr auto;
+    grid-template-areas:
+      "grid  grid"
+      "left  right";
+    align-items: center;
+    row-gap: 8px;
+    padding: 54px 0 10px;
+  }
+
+  .channels-viewport { grid-area: grid; width: 100%; }
+  .page-arrow-left   { grid-area: left;  justify-self: end; }
+  .page-arrow-right  { grid-area: right; justify-self: start; }
+
+  .channels {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 9px;
+    width: min(420px, 94%);
+    /* 2 x 6 grid of 2:1 tiles, gaps included */
+    aspect-ratio: 5 / 8;
+    max-height: 100%;
+    margin: 0 auto;
+  }
+
+  .page-arrow { width: 48px; height: 48px; }
+
+  /* no hover on touch — the label is always up */
+  .channel-label {
+    transform: translateY(0);
+    font-size: 11px;
+    padding: 4px 6px;
+  }
+
+  .disc-slot, .mail-slot { bottom: 14%; }
+
+  /* keep the address bar clear of the mute button */
+  .ca-bar {
+    top: 8px;
+    padding: 6px 6px 6px 12px;
+    max-width: calc(100vw - 104px);
+  }
+
+  .has-ca .menu-top      { padding-top: 58px; }
+  .has-ca .channel-stage { padding-top: 50px; }
+  .mute-btn { top: 8px; right: 8px; width: 34px; height: 34px; font-size: 14px; }
+
+  .channel-bar { flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .channel-title { order: -1; flex-basis: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
