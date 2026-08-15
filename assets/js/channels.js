@@ -19,7 +19,7 @@ window.WIIMERICA = {
   links: {
     buy:       "",                       // e.g. pump.fun / Raydium / Uniswap link
     chart:     "",                       // e.g. DexScreener link
-    twitter:   "https://x.com/wiimerica",
+    twitter:   "https://x.com/wiimerica_fun",
     telegram:  ""                        // e.g. https://t.me/wiimerica
   },
 

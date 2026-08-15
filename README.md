@@ -34,6 +34,11 @@ The site rendered as unstyled HTML on the live domain for both reasons. Do not
 add a `start` or `build` script to `package.json`, and do not move the dev
 server back to the root.
 
+One more trap: **`vercel.json` allows no comment keys.** Adding a `"//"` field
+fails schema validation, and every deploy is then rejected while the last good
+build stays live — so the site looks unchanged and nothing obviously errors.
+Keep that file to documented properties only.
+
 ---
 
 ## Before launch — the two things you must do

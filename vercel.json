@@ -1,21 +1,4 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-
-  "//": [
-    "This site is plain static files with no build step.",
-    "",
-    "Vercel special-cases a root folder named `public/`: with no explicit",
-    "config it treats that folder as the OUTPUT DIRECTORY and publishes its",
-    "CONTENTS at the site root. That deployed public/thumbs/x.jpg as /thumbs/x.jpg",
-    "and never deployed assets/ at all, because assets/ lives outside public/.",
-    "index.html asks for `assets/css/wii.css` and `public/thumbs/...`, so every",
-    "request 404'd and the page rendered as unstyled HTML.",
-    "",
-    "Pinning outputDirectory to the repo root makes Vercel publish the tree",
-    "exactly as it is on disk, so the paths in index.html resolve the same way",
-    "live as they do locally. Do not remove this file."
-  ],
-
   "framework": null,
   "buildCommand": null,
   "installCommand": null,
