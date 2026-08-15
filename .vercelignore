@@ -1,0 +1,7 @@
+# Dev-only files — keep them out of the deployed tree.
+# Everything not listed here ships, including assets/ and public/.
+tools/
+server.js
+README.md
+.claude/
+node_modules/
