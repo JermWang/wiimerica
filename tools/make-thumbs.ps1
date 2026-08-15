@@ -34,6 +34,25 @@ function Test-HasAlpha([System.Drawing.Image]$img) {
     return $false
 }
 
+# Bounding box of the pixels that are actually visible. Art exported from a
+# design tool often carries a lot of empty margin — the logo was 68% vertical
+# padding, which the boot screen reserved as a huge gap under the wordmark.
+function Get-AlphaBounds([System.Drawing.Bitmap]$bmp, [int]$threshold = 10) {
+    $minX = $bmp.Width; $minY = $bmp.Height; $maxX = -1; $maxY = -1
+    for ($y = 0; $y -lt $bmp.Height; $y++) {
+        for ($x = 0; $x -lt $bmp.Width; $x++) {
+            if ($bmp.GetPixel($x, $y).A -gt $threshold) {
+                if ($x -lt $minX) { $minX = $x }
+                if ($x -gt $maxX) { $maxX = $x }
+                if ($y -lt $minY) { $minY = $y }
+                if ($y -gt $maxY) { $maxY = $y }
+            }
+        }
+    }
+    if ($maxX -lt 0) { return $null }   # fully transparent
+    New-Object System.Drawing.Rectangle $minX, $minY, ($maxX - $minX + 1), ($maxY - $minY + 1)
+}
+
 function New-Resized([System.Drawing.Image]$img, [int]$w, [int]$h, $background) {
     $bmp = New-Object System.Drawing.Bitmap $w, $h
     $g   = [System.Drawing.Graphics]::FromImage($bmp)
@@ -67,9 +86,20 @@ Get-ChildItem -File -Path "$src\*" -Include *.png,*.jpg,*.jpeg | ForEach-Object 
 
         # Images that genuinely use transparency also get a PNG copy, for
         # places that sit on a dark background (the boot screen logo).
+        # This copy is trimmed to its visible pixels so the layout does not
+        # reserve space for empty margins baked into the export.
         if (Test-HasAlpha $img) {
             $bmpA  = New-Resized $img $w $h $null
             $destA = Join-Path $out "$base.png"
+
+            $box = Get-AlphaBounds $bmpA
+            if ($null -ne $box -and ($box.Width -lt $bmpA.Width -or $box.Height -lt $bmpA.Height)) {
+                $cropped = $bmpA.Clone($box, $bmpA.PixelFormat)
+                $bmpA.Dispose()
+                $bmpA = $cropped
+                "  trimmed $base.png -> $($box.Width)x$($box.Height)"
+            }
+
             $bmpA.Save($destA, [System.Drawing.Imaging.ImageFormat]::Png)
             $bmpA.Dispose()
             $after += (Get-Item $destA).Length

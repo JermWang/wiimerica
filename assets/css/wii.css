@@ -77,11 +77,16 @@ body:not(.state-boot) .boot {
   to   { opacity: 1; transform: scale(1); }
 }
 
+/* The source art is generated with wide empty margins; tools/make-thumbs.ps1
+   trims the .png copy to its visible pixels, so this box is the wordmark and
+   nothing else. Sizing is capped by height too, for short windows. */
 .boot-logo {
-  width: min(620px, 76vw);
+  width: min(660px, 80vw);
+  max-height: 24vh;
   height: auto;
+  object-fit: contain;
   display: block;
-  margin: 0 auto 28px;
+  margin: 0 auto clamp(28px, 5vh, 52px);
   filter: drop-shadow(0 6px 26px rgba(255, 255, 255, 0.22));
 }
 
