@@ -7,14 +7,16 @@ Plain HTML/CSS/JS. No build step, no framework, no runtime dependencies,
 no third-party scripts, no analytics, no network calls of any kind.
 
 **A note on the name.** The project was renamed from Wiimerica to Miimerica —
-every title, heading and piece of copy in this repo says Miimerica. Three
-things deliberately still say Wiimerica:
+every title, heading and piece of copy in this repo says Miimerica, including
+the social share card (its wordmark is drawn in code by
+`tools/make-share.ps1`, not copied from the boot-screen logo art). Two things
+deliberately still say Wiimerica:
 - the domain, **wiimerica.fun**, and the X account, **@wiimerica_fun**
   (external accounts, not something this repo controls — update the URLs here
   once you've moved them)
-- the boot-screen logo and the social share card, which have "Wiimerica"
-  drawn into the artwork as pixels, not text — swap in new art and regenerate
-  with `npm run share` when you have it
+- the boot-screen logo, `public/thumbs/wiimerica logo.png`, which has
+  "Wiimerica" drawn into it as pixels, not text — swap in new art when you
+  have it, or ask for the same code-drawn treatment the share card got
 - filenames on disk (`public/wiimerica/`, `wiimerica logo.png`, `wiimerica
   PROMO 1.mp4`) — renaming these is safe to do later, but every reference to
   them in `channels.js` would need to move in the same commit
