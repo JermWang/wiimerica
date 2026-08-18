@@ -11,9 +11,10 @@ every title, heading and piece of copy in this repo says Miimerica, including
 the social share card (its wordmark is drawn in code by
 `tools/make-share.ps1`, not copied from the boot-screen logo art). Two things
 deliberately still say Wiimerica:
-- the domain, **wiimerica.fun** (an external account, not something this repo
-  controls — update the URLs here once you've moved it). The X account has
-  already moved to **@MIIMERICA**.
+- nothing external any more: the X account is **@MIIMERICA** and the site
+  domain is **miimerica.xyz**. The absolute URLs in `index.html`
+  (`og:url`, `og:image`, `twitter:image`) point at that domain — they must be
+  absolute, so they need editing by hand if the domain ever changes again.
 - the boot-screen logo, `public/thumbs/wiimerica logo.png`, which has
   "Wiimerica" drawn into it as pixels, not text — swap in new art when you
   have it, or ask for the same code-drawn treatment the share card got
