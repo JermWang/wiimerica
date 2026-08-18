@@ -11,9 +11,9 @@ every title, heading and piece of copy in this repo says Miimerica, including
 the social share card (its wordmark is drawn in code by
 `tools/make-share.ps1`, not copied from the boot-screen logo art). Two things
 deliberately still say Wiimerica:
-- the domain, **wiimerica.fun**, and the X account, **@wiimerica_fun**
-  (external accounts, not something this repo controls — update the URLs here
-  once you've moved them)
+- the domain, **wiimerica.fun** (an external account, not something this repo
+  controls — update the URLs here once you've moved it). The X account has
+  already moved to **@MIIMERICA**.
 - the boot-screen logo, `public/thumbs/wiimerica logo.png`, which has
   "Wiimerica" drawn into it as pixels, not text — swap in new art when you
   have it, or ask for the same code-drawn treatment the share card got
@@ -68,7 +68,7 @@ contractAddress: "YourContractAddressHere",
 links: {
   buy:     "https://...",   // pump.fun / Raydium / Uniswap
   chart:   "https://...",   // DexScreener
-  twitter: "https://x.com/wiimerica_fun"
+  twitter: "https://x.com/MIIMERICA"
 }
 ```
 
