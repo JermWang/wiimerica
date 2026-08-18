@@ -1,10 +1,23 @@
-# Wiimerica
+# Miimerica
 
-A Wii Menu recreation for the $WIIMERICA token. Boot screen, channel grid,
+A Wii Menu recreation for the $MIIMERICA token. Boot screen, channel grid,
 hover previews, Wii Mail, and a contract-address bar.
 
 Plain HTML/CSS/JS. No build step, no framework, no runtime dependencies,
 no third-party scripts, no analytics, no network calls of any kind.
+
+**A note on the name.** The project was renamed from Wiimerica to Miimerica —
+every title, heading and piece of copy in this repo says Miimerica. Three
+things deliberately still say Wiimerica:
+- the domain, **wiimerica.fun**, and the X account, **@wiimerica_fun**
+  (external accounts, not something this repo controls — update the URLs here
+  once you've moved them)
+- the boot-screen logo and the social share card, which have "Wiimerica"
+  drawn into the artwork as pixels, not text — swap in new art and regenerate
+  with `npm run share` when you have it
+- filenames on disk (`public/wiimerica/`, `wiimerica logo.png`, `wiimerica
+  PROMO 1.mp4`) — renaming these is safe to do later, but every reference to
+  them in `channels.js` would need to move in the same commit
 
 ---
 
@@ -136,10 +149,9 @@ assets/css/wii.css      all styling
 assets/js/channels.js   ← the only file you normally edit
 assets/js/wii.js        menu behaviour
 assets/img|audio|fonts  Wii chrome (see Credits)
-public/wiimerica/       your original art and video
+public/wiimerica/       your original art and video (path unchanged — see below)
 public/thumbs/          generated — do not edit by hand
-tools/                  thumbnail + font build scripts
-server.js               local preview server
+tools/                  dev server, thumbnail + font build scripts
 ```
 
 ## Controls

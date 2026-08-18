@@ -82,4 +82,4 @@ http
       fs.createReadStream(file).pipe(res);
     });
   })
-  .listen(PORT, () => console.log(`Wiimerica running at http://localhost:${PORT}`));
+  .listen(PORT, () => console.log(`Miimerica running at http://localhost:${PORT}`));

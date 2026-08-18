@@ -2,7 +2,7 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "wiimerica",
+      "name": "miimerica",
       "runtimeExecutable": "node",
       "runtimeArgs": ["tools/dev-server.js"],
       "port": 5173

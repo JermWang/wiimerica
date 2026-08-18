@@ -1,11 +1,11 @@
 /* =====================================================================
-   WIIMERICA — site configuration
+   MIIMERICA — site configuration
    ---------------------------------------------------------------------
    This is the only file you need to edit for launch-day content.
    Everything else (layout, boot sequence, sounds) reads from here.
    ===================================================================== */
 
-window.WIIMERICA = {
+window.MIIMERICA = {
 
   /* -------------------------------------------------------------------
      1. TOKEN
@@ -46,18 +46,20 @@ window.WIIMERICA = {
   channels: [
 
     /* ---------- PAGE 1 ---------- */
-    /* THE PROMO — first channel on the menu. Full 54s cut, plays with sound. */
+    /* THE PROMO — first channel on the menu. Full 54s cut, plays with sound.
+       poster/video filenames still say "wiimerica" — that is the actual art
+       on disk, unchanged; only the title/body copy below is renamed. */
     {
-      title: "Wiimerica Channel",
+      title: "Miimerica Channel",
       poster: "wiimerica logo.png",
       video: "wiimerica PROMO 1.mp4",
-      body: "Welcome to Wiimerica. Everybody gets a channel."
+      body: "Welcome to Miimerica. Everybody gets a channel."
     },
     {
-      title: "Buy Wiimerica",
+      title: "Buy Miimerica",
       type: "buy",
       poster: "PFP.png",
-      body: "Get your copy of Wiimerica."
+      body: "Get your copy of Miimerica."
     },
     {
       title: "Cookout Channel",
@@ -165,7 +167,7 @@ window.WIIMERICA = {
     {
       title: "Late Show",
       video: "b09217c1-681d-4012-98fb-d732e3a6557c-video.mp4",
-      body: "Prime time in Wiimerica."
+      body: "Prime time in Miimerica."
     },
     {
       title: "Work Channel",
@@ -187,12 +189,12 @@ window.WIIMERICA = {
   ------------------------------------------------------------------- */
   mail: [
     {
-      from: "Wiimerica",
-      subject: "Welcome to Wiimerica",
+      from: "Miimerica",
+      subject: "Welcome to Miimerica",
       body: "You have 24 channels and no responsibilities. Enjoy your stay."
     },
     {
-      from: "Wiimerica",
+      from: "Miimerica",
       subject: "A reminder",
       body: "This is a memecoin. It is a joke. Do not spend money you cannot afford to lose."
     }

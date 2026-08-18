@@ -1,11 +1,11 @@
 /* =====================================================================
-   WIIMERICA — menu behaviour
+   MIIMERICA — menu behaviour
    No dependencies, no network calls. Reads everything from channels.js.
    ===================================================================== */
 (function () {
   "use strict";
 
-  var CFG = window.WIIMERICA || {};
+  var CFG = window.MIIMERICA || {};
   var PER_PAGE = 12;
 
   var $ = function (id) { return document.getElementById(id); };
@@ -256,11 +256,11 @@
 
     var pfp = document.createElement("img");
     pfp.src = thumb("PFP.png");
-    pfp.alt = "Wiimerica";
+    pfp.alt = "Miimerica";
     wrap.appendChild(pfp);
 
     var h = document.createElement("h2");
-    h.textContent = "$WIIMERICA";
+    h.textContent = "$MIIMERICA";
     wrap.appendChild(h);
 
     var sub = document.createElement("p");
@@ -425,7 +425,7 @@
     item.className = "mail-item";
     item.innerHTML =
       '<div class="m-from"></div><div class="m-subject"></div><div class="m-body"></div>';
-    item.querySelector(".m-from").textContent = m.from || "Wiimerica";
+    item.querySelector(".m-from").textContent = m.from || "Miimerica";
     item.querySelector(".m-subject").textContent = m.subject || "";
     item.querySelector(".m-body").textContent = m.body || "";
     mailList.appendChild(item);

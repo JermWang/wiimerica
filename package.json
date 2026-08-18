@@ -1,8 +1,8 @@
 {
-  "name": "wiimerica",
+  "name": "miimerica",
   "version": "1.0.0",
   "private": true,
-  "description": "Wiimerica — a Wii Menu recreation for the $WIIMERICA token.",
+  "description": "Miimerica — a Wii Menu recreation for the $MIIMERICA token.",
   "//": "No `start` or `build` script on purpose. Vercel treats those as a signal to deploy the repo as a Node app rather than as static files, which is what broke the live site.",
   "scripts": {
     "dev": "node tools/dev-server.js",
