@@ -1,12 +1,18 @@
 Add-Type -AssemblyName System.Drawing
 
-# Rebuilds public/thumbs/ — small JPEG copies of every image in
-# public/wiimerica/, used for the 12 channel tiles on the menu.
+# Rebuilds public/thumbs/ — small JPEG copies of every image in the source
+# folders below, used for the 12 channel tiles on the menu.
 # Run after adding or replacing channel art:   npm run thumbs
+#
+# Thumbs are written flat, keyed by basename, so a file is addressed the same
+# way no matter which source folder it came from. Keep basenames unique.
 
-$root   = Split-Path $PSScriptRoot -Parent
-$src    = Join-Path $root "public\wiimerica"
-$out    = Join-Path $root "public\thumbs"
+$root    = Split-Path $PSScriptRoot -Parent
+$srcDirs = @(
+    (Join-Path $root "public\wiimerica"),
+    (Join-Path $root "public\miimerica")
+) | Where-Object { Test-Path $_ }
+$out     = Join-Path $root "public\thumbs"
 $maxW   = 720
 $quality = 82
 
@@ -67,7 +73,7 @@ function New-Resized([System.Drawing.Image]$img, [int]$w, [int]$h, $background) 
 
 $before = 0; $after = 0; $n = 0
 
-Get-ChildItem -File -Path "$src\*" -Include *.png,*.jpg,*.jpeg | ForEach-Object {
+$srcDirs | ForEach-Object { Get-ChildItem -File -Path "$_\*" -Include *.png,*.jpg,*.jpeg } | ForEach-Object {
     $before += $_.Length
     $img  = [System.Drawing.Image]::FromFile($_.FullName)
     $base = [System.IO.Path]::GetFileNameWithoutExtension($_.Name)

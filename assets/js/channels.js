@@ -12,7 +12,7 @@ window.MIIMERICA = {
      Paste the contract address between the quotes when you have it.
      While it is empty the site shows "COMING SOON" instead.
   ------------------------------------------------------------------- */
-  contractAddress: "HC3XgUMQ2oeiQUz1af4WpjVKRz9aEJXwSHG8XsEJpump",
+  contractAddress: "V8pwrntDFeYXVDDSS3H5NygoudcHbToB8Q37mQFpump",
 
   /* Where "Start" sends people on the Buy channel.
      Leave a URL empty to hide that button.                            */
@@ -46,13 +46,13 @@ window.MIIMERICA = {
   channels: [
 
     /* ---------- PAGE 1 ---------- */
-    /* THE PROMO — first channel on the menu. Full 54s cut, plays with sound.
-       poster/video filenames still say "wiimerica" — that is the actual art
-       on disk, unchanged; only the title/body copy below is renamed. */
+    /* THE PROMO — first channel on the menu. Plays with sound.
+       These point at public/miimerica/ rather than mediaDir: a value with a
+       "/" in it is treated as a path from the site root. */
     {
       title: "Miimerica Channel",
-      poster: "wiimerica logo.png",
-      video: "wiimerica PROMO 1.mp4",
+      poster: "public/miimerica/miimerica-logo.png",
+      video: "public/miimerica/miimerica PROMO 1.mp4",
       body: "Welcome to Miimerica. Everybody gets a channel."
     },
     {

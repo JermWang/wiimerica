@@ -15,22 +15,37 @@
      Media paths: filenames contain spaces and unicode, so encode each
      path segment rather than trusting the browser to guess.
   --------------------------------------------------------------- */
+  function encodePath(path) {
+    return path.split("/").filter(Boolean).map(encodeURIComponent).join("/");
+  }
+
   function join(dir, file) {
-    return (dir || "").split("/").filter(Boolean).map(encodeURIComponent).join("/") +
-           "/" + encodeURIComponent(file);
+    return encodePath(dir || "") + "/" + encodeURIComponent(file);
+  }
+
+  /* A value containing "/" is a path from the site root, so art can live
+     outside mediaDir (e.g. "public/miimerica/logo.png"). Anything else is a
+     bare filename inside mediaDir. */
+  function hasDir(file) {
+    return file.indexOf("/") !== -1;
+  }
+
+  function baseName(file) {
+    return file.split("/").pop();
   }
 
   /* full-size original — used once a channel is opened */
   function media(file) {
     if (!file) return "";
-    return join(CFG.mediaDir, file);
+    return hasDir(file) ? encodePath(file) : join(CFG.mediaDir, file);
   }
 
-  /* 720px JPEG copy — used for the 12 tiles on the menu */
+  /* 720px copy — used for the 12 tiles on the menu. Thumbs are written flat
+     by basename, so this is the same regardless of the source folder. */
   function thumb(file) {
     if (!file) return "";
     if (!CFG.thumbDir) return media(file);
-    return join(CFG.thumbDir, file.replace(/\.[^.]+$/, "") + ".jpg");
+    return join(CFG.thumbDir, baseName(file).replace(/\.[^.]+$/, "") + ".jpg");
   }
 
   /* ---------------------------------------------------------------
@@ -317,6 +332,19 @@
     return a;
   }
 
+  /* Opening a channel is always a click, so sound is allowed. If a browser
+     still refuses, fall back to muted rather than showing a stalled frame. */
+  function autoplay(v) {
+    var p = v.play();
+    if (p && p.catch) {
+      p.catch(function () {
+        v.muted = true;
+        var again = v.play();
+        if (again && again.catch) again.catch(function () {});
+      });
+    }
+  }
+
   function openChannel(ch) {
     current = ch;
     clearStage();
@@ -345,9 +373,15 @@
         stage.appendChild(v);
         stage.appendChild(buildStageAudio(ch, false));
       } else {
-        v.controls = true;
+        /* No control bar: the clip fills the screen like a real channel.
+           Click anywhere on it to pause/resume, and Replay is in the bar. */
+        v.controls = false;
         v.loop = true;
+        v.addEventListener("click", function () {
+          if (v.paused) { v.play(); } else { v.pause(); }
+        });
         stage.appendChild(v);
+        autoplay(v);
       }
 
       btnStart.hidden = false;

@@ -6,21 +6,20 @@ hover previews, Wii Mail, and a contract-address bar.
 Plain HTML/CSS/JS. No build step, no framework, no runtime dependencies,
 no third-party scripts, no analytics, no network calls of any kind.
 
-**A note on the name.** The project was renamed from Wiimerica to Miimerica —
-every title, heading and piece of copy in this repo says Miimerica, including
-the social share card (its wordmark is drawn in code by
-`tools/make-share.ps1`, not copied from the boot-screen logo art). Two things
-deliberately still say Wiimerica:
-- nothing external any more: the X account is **@MIIMERICA** and the site
-  domain is **miimerica.xyz**. The absolute URLs in `index.html`
-  (`og:url`, `og:image`, `twitter:image`) point at that domain — they must be
-  absolute, so they need editing by hand if the domain ever changes again.
-- the boot-screen logo, `public/thumbs/wiimerica logo.png`, which has
-  "Wiimerica" drawn into it as pixels, not text — swap in new art when you
-  have it, or ask for the same code-drawn treatment the share card got
-- filenames on disk (`public/wiimerica/`, `wiimerica logo.png`, `wiimerica
-  PROMO 1.mp4`) — renaming these is safe to do later, but every reference to
-  them in `channels.js` would need to move in the same commit
+**A note on the name.** The project was renamed from Wiimerica to Miimerica.
+Every title, heading and piece of copy says Miimerica, and the real Miimerica
+artwork — logo and promo video — lives in `public/miimerica/` and is what the
+boot screen, channel 1 and the share card all use. The X account is
+**@MIIMERICA**; the site domain is **miimerica.xyz**.
+
+Two leftovers, both harmless:
+- The absolute URLs in `index.html` (`og:url`, `og:image`, `twitter:image`)
+  hardcode the domain — they have to be absolute for scrapers, so they need
+  editing by hand if the domain changes again.
+- The old `public/wiimerica/` folder keeps its name, and still holds the
+  channel art plus the superseded `wiimerica logo.png` / `wiimerica PROMO
+  1.mp4`. Renaming it is safe to do later, but every reference in
+  `channels.js` would have to move in the same commit.
 
 ---
 
@@ -105,21 +104,25 @@ automatically.
 
 - `type: "buy"` renders the token panel instead of a video.
 - Omit `poster` and the video's first frame is used as the tile art.
-- Files are read from `public/wiimerica/`. Spaces and unicode in filenames are
-  fine — paths are encoded at runtime.
+- A bare filename is read from `mediaDir` (`public/wiimerica/`). A value
+  containing a `/` is treated as a path from the site root instead, which is
+  how channel 1 points at `public/miimerica/`. Spaces and unicode are fine —
+  paths are encoded at runtime.
+
+Opened channels play full-bleed: the clip fills the whole display area with
+no control bar, autoplays with sound, and loops. Click it to pause or resume;
+**Replay** is in the bottom bar.
 
 ### `video` + `audio` on the same channel
 
 Give a channel both and the clip becomes a silent looping backdrop while the
-audio track plays through as the real content. Channel 1 uses this: the promo's
-full cut in this folder is a 42-second **audio-only** export, and
-`wiimerica.mp4` is only 6 seconds, so the clip loops behind the full promo.
+audio track plays through as the real content. Nothing uses this now — channel
+1 plays the real promo video directly — but it is there if you ever have a
+soundtrack separate from the picture.
 
-**If you have a real full-length promo video**, drop it in `public/wiimerica/`,
-put the filename in channel 1's `video:` and delete its `audio:` line. That is
-the whole change.
-
-**After adding or replacing any image, run `npm run thumbs`.**
+**After adding or replacing any image, run `npm run thumbs`.** Thumbnails are
+generated from both `public/wiimerica/` and `public/miimerica/` into
+`public/thumbs/`, flat and keyed by basename, so keep basenames unique.
 
 ---
 

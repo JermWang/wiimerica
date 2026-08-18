@@ -3,19 +3,19 @@ Add-Type -AssemblyName System.Drawing
 # Generates the favicon set and the social share card into assets/img/.
 # Run after changing the source art:   npm run share
 #
-# The share card is built from real project art only — no drawn or generated
-# text. Drop a purpose-made 1200x630 card at public/wiimerica/share.png (or
-# .jpg) and it is used as-is. With no such file, the PFP is cover-cropped to
-# card size, which carries no wordmark and so never disagrees with the
-# project name.
+# Built from real project art only — never drawn or generated text.
+# Card = PFP backdrop, darkened, with the real Miimerica logo over it.
+# A purpose-made 1200x630 file at public/miimerica/share.png (or .jpg) wins
+# outright and is used as-is.
 
 $root     = Split-Path $PSScriptRoot -Parent
 $out      = Join-Path $root "assets\img"
 $pfp      = Join-Path $root "public\wiimerica\PFP.png"
+$logo     = Join-Path $root "public\thumbs\miimerica-logo.png"   # already trimmed
 
 # optional purpose-made share art, preferred when present
 $shareArt = @("share.png", "share.jpg", "share.jpeg") |
-            ForEach-Object { Join-Path $root "public\wiimerica\$_" } |
+            ForEach-Object { Join-Path $root "public\miimerica\$_" } |
             Where-Object { Test-Path $_ } |
             Select-Object -First 1
 
@@ -58,6 +58,21 @@ $scale = [Math]::Max($W / $cardSrc.Width, $H / $cardSrc.Height)
 $dw = [int]($cardSrc.Width * $scale); $dh = [int]($cardSrc.Height * $scale)
 $g.DrawImage($cardSrc, [int](($W - $dw) / 2), [int](($H - $dh) / 2), $dw, $dh)
 
+# With no purpose-made card, lay the real logo over the darkened PFP
+$usedLabel = if ($shareArt) { Split-Path $shareArt -Leaf } else { "PFP.png" }
+if (-not $shareArt -and (Test-Path $logo)) {
+    $shade = New-Object System.Drawing.SolidBrush ([System.Drawing.Color]::FromArgb(140, 0, 0, 0))
+    $g.FillRectangle($shade, 0, 0, $W, $H)
+    $shade.Dispose()
+
+    $logoImg = [System.Drawing.Image]::FromFile($logo)
+    $lw = [int]($W * 0.78)
+    $lh = [int]($logoImg.Height * $lw / $logoImg.Width)
+    $g.DrawImage($logoImg, [int](($W - $lw) / 2), [int](($H - $lh) / 2), $lw, $lh)
+    $logoImg.Dispose()
+    $usedLabel = "PFP.png + miimerica-logo.png"
+}
+
 $g.Dispose()
 $dest = Join-Path $out "og-card.jpg"
 $bmp.Save($dest, $jpegCodec, $jpegParams)
@@ -65,5 +80,4 @@ $bmp.Dispose()
 if ($shareArt) { $cardSrc.Dispose() }
 $src.Dispose()
 
-$usedLabel = if ($shareArt) { Split-Path $shareArt -Leaf } else { "PFP.png (no share.png found)" }
 "og-card.jpg  {0}x{1}  {2:N1} KB  from {3}" -f $W, $H, ((Get-Item $dest).Length / 1KB), $usedLabel
